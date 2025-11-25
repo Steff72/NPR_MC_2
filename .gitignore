@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Data
+data/
+*.csv
+*.json
+*.parquet
+*.pkl
+
+# Models
+models/
+*.pt
+*.pth
+*.bin
+*.h5
+
+# Logs and Temporary files
+wandb/
+tmp_trainer/
+*.log
+
+# System
+.DS_Store
+.env
+.idea/
+.vscode/
