@@ -19,7 +19,7 @@ class SentimentClassifier:
     def compute_metrics(self, eval_pred):
         logits, labels = eval_pred
         predictions = np.argmax(logits, axis=-1)
-        precision, recall, f1, _ = precision_recall_fscore_support(labels, predictions, average='macro')
+        precision, recall, f1, _ = precision_recall_fscore_support(labels, predictions, average='macro', zero_division=0)
         acc = accuracy_score(labels, predictions)
         return {
             'accuracy': acc,
@@ -52,7 +52,8 @@ class SentimentClassifier:
             metric_for_best_model="f1",
             logging_dir=f'{self.output_dir}/logs',
             logging_steps=10,
-            report_to="none" # Disable wandb for now to keep it simple, or enable if configured
+            report_to="none", # Disable wandb for now to keep it simple, or enable if configured
+            dataloader_pin_memory=False # Fix for MPS warning
         )
         
         trainer = Trainer(

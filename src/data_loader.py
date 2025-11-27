@@ -32,8 +32,18 @@ def load_and_split_data(
     """
     
     # Load dataset
+    # Load dataset
     print(f"Loading dataset: {dataset_name} ({config_name})")
-    dataset = load_dataset(dataset_name, config_name, split="train", trust_remote_code=True)
+    if config_name:
+        dataset = load_dataset(dataset_name, config_name, split="train")
+    else:
+        dataset = load_dataset(dataset_name, split="train")
+        
+    # Check for nested structure (specific to descartes100/enhanced-financial-phrasebank)
+    if "train" in dataset.column_names and len(dataset.column_names) == 1:
+        print("Detected nested dataset structure. Flattening...")
+        dataset = dataset.map(lambda x: x["train"], remove_columns=["train"])
+        
     df = dataset.to_pandas()
     
     # Initial Split: Train+Val vs Test
