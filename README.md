@@ -1,47 +1,56 @@
 # Sentiment Analysis Mini-Challenge (NPR)
 
 ## Overview
-This repository contains a compact sentiment analysis workflow for the FHNW NLP mini-challenge. The main experiment flow lives in `npr_mc_2.ipynb`, and the reusable Hugging Face classifier wrapper lives in `models.py`.
+This repository is a notebook-centered sentiment-classification project for the FHNW NLP mini-challenge. The full workflow lives in `npr_mc_2.ipynb`; `models.py` only contains the small reusable classifier wrapper and metric helpers that the notebook calls.
 
-## Project Structure
+The notebook covers:
 
+- agreement-aware train/validation/test splitting
+- baseline transformer comparison and epoch calibration
+- embedding comparison and weak-label generation
+- semi-supervised retraining and learning curves
+- agreement-level comparison
+- an optional OpenAI bonus section that skips cleanly when the client or API key is unavailable
+
+## Repository Layout
+
+```text
+├── npr_mc_2.ipynb   # Main end-to-end analysis notebook
+├── models.py        # Small Hugging Face classifier wrapper and metrics
+├── requirements.txt # Python dependencies
+├── pics/            # Static image used by the report
+├── _quarto.yml      # Quarto config for rendering
+└── README.md        # Project documentation
 ```
-├── npr_mc_2.ipynb      # End-to-end notebook for data loading, training, weak labeling, and bonus analysis
-├── models.py           # Reusable transformer classifier wrapper
-├── requirements.txt    # Project dependencies
-└── README.md           # Project documentation
-```
-
-Training runs write model artifacts to a runtime-created `models/` directory.
 
 ## Setup
 
-1. Create a virtual environment:
+1. Create and activate a virtual environment:
    ```bash
    python -m venv .venv
    source .venv/bin/activate
    ```
-
-2. Install dependencies:
+2. Install the dependencies:
    ```bash
    pip install -r requirements.txt
    ```
+3. Open the notebook in Jupyter or VS Code and select the `.venv` interpreter/kernel.
+4. Optional: set `OPENAI_API_KEY` if you want to run the bonus LLM section.
 
-3. Optional, for the OpenAI bonus section, ensure `OPENAI_API_KEY` is already set in your environment or notebook session.
+## Running The Notebook
 
-## Usage
+Run `npr_mc_2.ipynb` from top to bottom.
 
-Open `npr_mc_2.ipynb` and run the notebook top to bottom. It:
+The notebook:
 
-- downloads the Financial Phrasebank dataset from Hugging Face
-- creates train/validation/test splits
-- trains baseline transformer models
-- generates weak labels with sentence embeddings and k-NN
-- evaluates the semi-supervised setup
-- optionally runs the OpenAI bonus section when `OPENAI_API_KEY` is available
+- loads Financial PhraseBank agreement subsets
+- falls back to a local `FinancialPhraseBank-v1.0` directory if one is already available
+- otherwise loads the same data from [takala/financial_phrasebank](https://huggingface.co/datasets/takala/financial_phrasebank)
+- trains the baseline transformer models directly from notebook cells
+- writes model outputs and intermediate trainer state to a runtime-generated `models/` directory
+- keeps local plotting and numba caches inside the project folder for easier cleanup
 
-## Data
-The dataset is loaded directly inside `npr_mc_2.ipynb` via `datasets.load_dataset(...)` using [takala/financial_phrasebank](https://huggingface.co/datasets/takala/financial_phrasebank).
+## Notes
 
-## Author
-Stefan Binkert
+- The workflow is intentionally notebook-first rather than packaged as a training framework.
+- The optional OpenAI section is guarded and will be skipped automatically if the client import fails or `OPENAI_API_KEY` is not set.
